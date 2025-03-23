@@ -18,6 +18,8 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+const isInvalidDate = (date) => date.toUTCString() == 'Invalid Date';
+
 app.get('/api/:date?', function (req, res) {
   const date = req.params.date;
   let dateObj;
@@ -26,9 +28,9 @@ app.get('/api/:date?', function (req, res) {
   } else {
     dateObj = new Date(date);
 
-    if (dateObj == 'Invalid Date') {
-      dateObj = new Date(parseInt(date));
-      if (dateObj == 'Invalid Date') {
+    if (isInvalidDate(dateObj)) {
+      dateObj = new Date(+date);
+      if (isInvalidDate(dateObj)) {
         res.json({ error: 'Invalid Date' });
       }
     }
